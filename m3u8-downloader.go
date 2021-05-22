@@ -31,11 +31,11 @@ const (
 
 var (
 	//命令行参数
-	urlFlag = flag.String("u", "", "m3u8下载地址(http(s)://url/xx/xx/index.m3u8)")
-	nFlag   = flag.Int("n", 16, "下载线程数(max goroutines num)")
-	htFlag  = flag.String("ht", "apiv1", "设置getHost的方式(apiv1: `http(s):// + url.Host + path.Dir(url.Path)`; apiv2: `http(s)://+ u.Host`")
-	oFlag   = flag.String("o", "output", "自定义文件名(默认为output)")
-	cFlag   = flag.String("c", "", "自定义请求cookie")
+	urlFlag = flag.String("u", "", "m3u8 Download link(http(s)://url/xx/xx/index.m3u8)")
+	nFlag   = flag.Int("n", 16, "Download threads(max goroutines num)")
+	htFlag  = flag.String("ht", "apiv1", "How to set getHost(apiv1: `http(s):// + url.Host + path.Dir(url.Path)`; apiv2: `http(s)://+ u.Host`")
+	oFlag   = flag.String("o", "output", "Custom file name (default is OUTPUT)")
+	cFlag   = flag.String("c", "", "Custom request cookie")
 
 	logger *log.Logger
 	ro     = &grequests.RequestOptions{
@@ -65,7 +65,7 @@ func main() {
 }
 
 func Run() {
-	msgTpl := "[功能]:多线程下载直播流m3u8的视屏（ts+合并）\n[提醒]:如果下载失败，请使用-ht=apiv2\n[提醒]:如果下载失败，m3u8地址可能存在嵌套\n[提醒]:如果进度条中途下载失败，可重复执行"
+	msgTpl := "[Function]: Multi-threaded download of live streaming m3u8 video (ts+merged)\n[Reminder]: If the download fails, please use -ht=apiv2\n[Reminder]: If the download fails, the m3u8 address may be nested\n [Reminder]: If the download fails in the middle of the progress bar, you can repeat the execution"
 	fmt.Println(msgTpl)
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	now := time.Now()
@@ -109,7 +109,7 @@ func Run() {
 	}
 
 	ts_list := getTsList(m3u8Host, m3u8Body)
-	fmt.Println("待下载ts文件数量:", len(ts_list))
+	fmt.Println("Number of TS files to be downloaded:", len(ts_list))
 
 	//下载ts
 	downloader(ts_list, maxGoroutines, download_dir, ts_key)
@@ -124,7 +124,7 @@ func Run() {
 	os.RemoveAll(download_dir)
 
 	DrawProgressBar("Merging", float32(1), progressWidth, "merge.ts")
-	fmt.Printf("\nDone! 耗时:%6.2fs\n", time.Now().Sub(now).Seconds())
+	fmt.Printf("\nDone! Time Consuming:%6.2fs\n", time.Now().Sub(now).Seconds())
 }
 
 //获取m3u8地址的host
